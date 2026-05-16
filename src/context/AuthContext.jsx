@@ -19,8 +19,9 @@ export function AuthProvider({ children }) {
       try {
         const res = await api.get("/auth/me");
         setUser(res.data);
-      } catch (error) {
+      } catch (err) {
         localStorage.removeItem("token");
+        console.log(err.response.data);
         setUser(null);
       } finally {
         setLoading(false);
@@ -44,8 +45,21 @@ export function AuthProvider({ children }) {
     setUser(null);
   };
 
+  const register = async (nombre, email, password) => {
+    const res = await api.post("/auth/register", {
+      nombre,
+      email,
+      password,
+    });
+
+    localStorage.setItem("token", res.data.token);
+    setUser(res.data.user);
+
+    return res.data;
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, register }}>
       {children}
     </AuthContext.Provider>
   );
