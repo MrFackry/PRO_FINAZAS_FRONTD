@@ -84,6 +84,15 @@ export default function Login() {
               Regístrate
             </Link>
           </p>
+          <p className="text-center text-xs text-gray-600">
+            <a
+              href="/privacidad"
+              target="_blank"
+              className="hover:text-gray-400 transition-colors"
+            >
+              Política de Privacidad
+            </a>
+          </p>
         </form>
       </div>
     </div>
