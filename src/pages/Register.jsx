@@ -1,19 +1,19 @@
-import { useState }          from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth }           from "../context/useAuth";
+import { useAuth } from "../context/UseAuth";
 
 export default function Register() {
   const [form, setForm] = useState({
-    username:        "",
-    email:           "",
-    password:        "",
+    username: "",
+    email: "",
+    password: "",
     confirmPassword: "",
   });
-  const [error,         setError]         = useState("");
-  const [loading,       setLoading]       = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const [aceptaTerminos, setAceptaTerminos] = useState(false);
   const { register } = useAuth();
-  const navigate     = useNavigate();
+  const navigate = useNavigate();
 
   const handleChange = (e) =>
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -45,7 +45,6 @@ export default function Register() {
   return (
     <div className="min-h-screen bg-ak-black flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
-
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-ak-red mb-1">FinanzasPro</h1>
           <p className="text-gray-500 text-sm">Control financiero personal</p>
@@ -105,7 +104,9 @@ export default function Register() {
 
           {/* Confirmar contraseña */}
           <div className="flex flex-col gap-1">
-            <label className="text-xs text-gray-400">Confirmar contraseña</label>
+            <label className="text-xs text-gray-400">
+              Confirmar contraseña
+            </label>
             <input
               type="password"
               name="confirmPassword"
@@ -127,14 +128,14 @@ export default function Register() {
               type="checkbox"
               id="terminos"
               checked={aceptaTerminos}
-              onChange={e => setAceptaTerminos(e.target.checked)}
+              onChange={(e) => setAceptaTerminos(e.target.checked)}
               className="mt-0.5 w-4 h-4 accent-ak-red cursor-pointer flex-shrink-0"
             />
             <label
               htmlFor="terminos"
               className="text-xs text-gray-400 leading-relaxed cursor-pointer"
             >
-              He leído y acepto la{' '}
+              He leído y acepto la{" "}
               <a
                 href="/privacidad"
                 target="_blank"
@@ -142,8 +143,8 @@ export default function Register() {
                 className="text-ak-red hover:underline"
               >
                 Política de Privacidad
-              </a>
-              {' '}y entiendo cómo se tratan mis datos financieros.
+              </a>{" "}
+              y entiendo cómo se tratan mis datos financieros.
             </label>
           </div>
 

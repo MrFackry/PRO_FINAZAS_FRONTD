@@ -7,7 +7,8 @@ export default function Layout({ children }) {
   const navigate = useNavigate();
   const anioActual = new Date().getFullYear();
 
-  const handleLogout = () => {
+  const handleLogout = (e) => {
+    e.stopPropagation();
     logout();
     navigate("/login");
   };
@@ -16,6 +17,7 @@ export default function Layout({ children }) {
     { path: "/dashboard", label: "Dashboard" },
     { path: "/categorias", label: "Categorías" },
     { path: `/resumen/${anioActual}`, label: "Resumen" },
+    { path: "/perfil", label: "Perfil" }, //  Agregado como link normal
   ];
 
   return (
@@ -26,6 +28,7 @@ export default function Layout({ children }) {
           FinanzasPro
         </span>
 
+        {/* Links de navegación */}
         <div className="flex items-center gap-6">
           {links.map((link) => (
             <Link
@@ -42,14 +45,25 @@ export default function Layout({ children }) {
           ))}
         </div>
 
+        {/* Usuario y logout —  separados correctamente */}
         <div className="flex items-center gap-3">
-          <div className="w-7 h-7 rounded-full bg-ak-red flex items-center justify-center text-xs font-bold">
-            {user?.nombre?.charAt(0).toUpperCase()}
+          {/* Avatar + nombre → navega a perfil */}
+          <div
+            className="flex items-center gap-2 cursor-pointer"
+            onClick={() => navigate("/perfil")}
+          >
+            <div className="w-7 h-7 rounded-full bg-ak-red hover:bg-ak-red-dark flex items-center justify-center text-xs font-bold transition-colors">
+              {user?.nombre?.charAt(0).toUpperCase()}
+            </div>
+            <span className="text-sm text-gray-400 hover:text-ak-white transition-colors">
+              {user?.nombre}
+            </span>
           </div>
-          <span className="text-sm text-gray-400">{user?.nombre}</span>
+
+          {/*  Botón salir separado — no hereda el onClick del div */}
           <button
             onClick={handleLogout}
-            className="text-xs text-gray-500 hover:text-ak-red transition-colors ml-2"
+            className="text-xs text-gray-500 hover:text-ak-red transition-colors border-l border-ak-gray2 pl-3 ml-1"
           >
             Salir
           </button>

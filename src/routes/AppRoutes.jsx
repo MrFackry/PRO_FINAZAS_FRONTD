@@ -9,15 +9,19 @@ import Categorias from "../pages/Categorias";
 import Resumen from "../pages/Resumen";
 import Privacidad from "../pages/Privacidad";
 import Layout from "../components/Layout";
+import Perfil from "../pages/Perfil";
 
 function PrivateRoute({ children }) {
   const { user, loading } = useAuth();
+
   if (loading)
     return (
       <div className="min-h-screen bg-ak-black flex items-center justify-center">
         <p className="text-ak-red animate-pulse text-lg">Cargando...</p>
       </div>
     );
+
+  // Solo redirige si loading terminó Y no hay usuario
   return user ? children : <Navigate to="/login" />;
 }
 
@@ -33,7 +37,7 @@ export default function AppRoutes() {
     <Routes>
       <Route path="/" element={<Navigate to="/dashboard" />} />
 
-      {/* ✅ Ruta pública — NO requiere login ni PublicRoute */}
+      {/* Ruta pública — NO requiere login ni PublicRoute */}
       <Route path="/privacidad" element={<Privacidad />} />
 
       <Route
@@ -82,6 +86,17 @@ export default function AppRoutes() {
           <PrivateRoute>
             <Layout>
               <Resumen />
+            </Layout>
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/perfil"
+        element={
+          <PrivateRoute>
+            <Layout>
+              <Perfil />
             </Layout>
           </PrivateRoute>
         }

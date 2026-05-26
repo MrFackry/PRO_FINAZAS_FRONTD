@@ -151,7 +151,7 @@ export default function Dashboard() {
 
         {/* Formulario — 1/3 del ancho */}
         <div className="col-span-1">
-          {categorias.length > 0 && (
+          {categorias.length > 0 && !loading && (
             <FormMes
               mes={mes}
               anio={anio}

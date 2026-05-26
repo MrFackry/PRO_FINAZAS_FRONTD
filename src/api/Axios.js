@@ -11,14 +11,27 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Si el token expiró, redirigir al login
+//  Solo redirigir al login si NO es la verificación inicial
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    const url = error.config?.url || "";
+
+    //  Ignorar 401 de /auth/me — AuthContext lo maneja solo
+    const esVerificacionInicial = url.includes("/auth/me");
+    const esLogin = url.includes("/auth/login");
+    const esRegister = url.includes("/auth/register");
+
+    if (
+      error.response?.status === 401 &&
+      !esVerificacionInicial &&
+      !esLogin &&
+      !esRegister
+    ) {
       localStorage.removeItem("token");
       window.location.href = "/login";
     }
+
     return Promise.reject(error);
   },
 );
