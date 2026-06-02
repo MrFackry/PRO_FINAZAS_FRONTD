@@ -15,9 +15,9 @@ export default function Layout({ children }) {
 
   const links = [
     { path: "/dashboard", label: "Dashboard" },
+    { path: "/historial", label: "Historial" },
     { path: "/categorias", label: "Categorías" },
     { path: `/resumen/${anioActual}`, label: "Resumen" },
-    { path: "/perfil", label: "Perfil" }, //  Agregado como link normal
   ];
 
   return (

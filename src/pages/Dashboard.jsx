@@ -7,6 +7,7 @@ import GraficaDona from "../components/GraficaDona";
 import GraficaBarras from "../components/GraficaBarras";
 import GraficaLinea from "../components/GraficaLinea";
 import FormMes from "../components/FormMes";
+import { useSearchParams } from "react-router-dom";
 
 const MESES_ORDEN = [
   "Enero",
@@ -24,45 +25,97 @@ const MESES_ORDEN = [
 ];
 
 export default function Dashboard() {
+  const [searchParams] = useSearchParams();
   const hoy = new Date();
+
   const [mes, setMes] = useState(MESES_ORDEN[hoy.getMonth()]);
   const [anio, setAnio] = useState(hoy.getFullYear());
 
+  // Leer parámetros de la URL
+  useEffect(() => {
+    const mesURL = searchParams.get("mes");
+    const anioURL = searchParams.get("anio");
+
+    console.log("URL PARAMS", {
+      mesURL,
+      anioURL,
+    });
+
+    setMes(mesURL || MESES_ORDEN[hoy.getMonth()]);
+    setAnio(Number(anioURL) || hoy.getFullYear());
+  }, [searchParams]);
+
   const { datos, loading, setDatos } = useMes(mes, anio);
+
+  console.log("DASHBOARD", {
+    mes,
+    anio,
+    loading,
+    datos,
+  });
+
+  useEffect(() => {
+    console.log("DATOS DEL MES", datos);
+  }, [datos]);
 
   const [categorias, setCategorias] = useState([]);
   const [historial, setHistorial] = useState([]);
   const [disponibleAcum, setDisponibleAcum] = useState(0);
 
-  // Cargar categorías del usuario
+  // Cargar categorías
   useEffect(() => {
-    api.get("/categorias").then((res) => setCategorias(res.data));
+    api
+      .get("/categorias")
+      .then((res) => {
+        console.log("CATEGORIAS", res.data);
+        setCategorias(res.data);
+      })
+      .catch(console.error);
   }, []);
 
-  // Cargar historial del año para gráficas
+  // Cargar historial
   useEffect(() => {
-    api.get(`/meses?anio=${anio}`).then((res) => setHistorial(res.data));
+    api
+      .get(`/meses?anio=${anio}`)
+      .then((res) => {
+        console.log("HISTORIAL", res.data);
+        setHistorial(res.data);
+      })
+      .catch(console.error);
   }, [anio]);
 
-  // Calcular disponible acumulado hasta el mes seleccionado
+  // Disponible acumulado
   useEffect(() => {
     if (historial.length === 0) return;
+
     const idxActual = MESES_ORDEN.indexOf(mes);
+
     const acum = historial
       .filter((m) => MESES_ORDEN.indexOf(m.mes) <= idxActual)
       .reduce((s, m) => s + m.balance, 0);
+
     setDisponibleAcum(acum);
   }, [historial, mes]);
 
   const handleCambioMes = (nuevoMes, nuevoAnio) => {
+    console.log("CAMBIO MES", {
+      nuevoMes,
+      nuevoAnio,
+    });
+
     setMes(nuevoMes);
     setAnio(nuevoAnio);
   };
 
   const handleGuardado = (nuevosDatos) => {
+    console.log("GUARDADO", nuevosDatos);
+
     setDatos(nuevosDatos);
-    // Recargar historial para actualizar gráficas
-    api.get(`/meses?anio=${anio}`).then((res) => setHistorial(res.data));
+
+    api
+      .get(`/meses?anio=${anio}`)
+      .then((res) => setHistorial(res.data))
+      .catch(console.error);
   };
 
   return (
@@ -153,6 +206,7 @@ export default function Dashboard() {
         <div className="col-span-1">
           {categorias.length > 0 && !loading && (
             <FormMes
+              key={`${mes}-${anio}`}
               mes={mes}
               anio={anio}
               datosIniciales={datos}

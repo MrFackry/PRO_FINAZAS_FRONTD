@@ -31,14 +31,38 @@ export default function FormMes({
   const sugerencias = getSugerencias(pais);
 
   useEffect(() => {
+    console.log("USE EFFECT DISPARADO", {
+      datosIniciales,
+      categorias,
+      mes,
+      anio,
+    });
+
     if (!categorias || categorias.length === 0) return;
+
     if (datosIniciales) {
+      console.log("CARGANDO DATOS EXISTENTES");
+
       setIngresos(datosIniciales.ingresos || "");
       setAhorros(datosIniciales.ahorros || "");
+
+      console.log(
+        "DETALLE COMPLETO",
+        JSON.stringify(datosIniciales.gastos_detalle, null, 2),
+      );
+
       const gastosMap = {};
+
       datosIniciales.gastos_detalle?.forEach((g) => {
-        gastosMap[g.categoria_id] = { monto: g.monto, nota: g.nota || "" };
+        const categoriaId = g.categoria_id || g.categorias?.id;
+
+        gastosMap[categoriaId] = {
+          monto: g.monto,
+          nota: g.nota || "",
+        };
       });
+      console.log("GASTOS MAP", gastosMap);
+      console.log("GASTOS DETALLE", datosIniciales.gastos_detalle);
       setGastos(
         categorias.map((c) => ({
           categoria_id: c.id,
@@ -47,13 +71,29 @@ export default function FormMes({
         })),
       );
     } else {
+      console.log("MES NUEVO");
+
       setIngresos("");
       setAhorros("");
+
       setGastos(
-        categorias.map((c) => ({ categoria_id: c.id, monto: "", nota: "" })),
+        categorias.map((c) => ({
+          categoria_id: c.id,
+          monto: "",
+          nota: "",
+        })),
       );
     }
-  }, [datosIniciales, mes, anio]);
+  }, [datosIniciales, categorias, mes, anio]);
+
+  console.log("FORM RENDER", {
+    ingresos,
+    ahorros,
+    gastos,
+    datosIniciales,
+    mes,
+    anio,
+  });
 
   const totalGastos = gastos.reduce((s, g) => s + (Number(g.monto) || 0), 0);
   const balance =

@@ -10,6 +10,7 @@ import Resumen from "../pages/Resumen";
 import Privacidad from "../pages/Privacidad";
 import Layout from "../components/Layout";
 import Perfil from "../pages/Perfil";
+import Historial from "../pages/Historial";
 
 function PrivateRoute({ children }) {
   const { user, loading } = useAuth();
@@ -97,6 +98,17 @@ export default function AppRoutes() {
           <PrivateRoute>
             <Layout>
               <Perfil />
+            </Layout>
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/historial"
+        element={
+          <PrivateRoute>
+            <Layout>
+              <Historial />
             </Layout>
           </PrivateRoute>
         }
